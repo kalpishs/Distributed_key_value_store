@@ -24,5 +24,5 @@ class Db_store(object):
         if key in self.storage:
             return  "key value are {}".format(self.storage[key])
         else:
-            return "No such key :{}".format(key)
+            return "No such key on any server"
 

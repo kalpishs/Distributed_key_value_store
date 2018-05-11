@@ -6,25 +6,26 @@ from flask import request
 from flask import abort
 import hashlib
 
+import requests
 
 def hash(key, partition_number):
 
     hash_object = hashlib.sha256(key.encode('utf-8')) # sha256
     hex_value = hash_object.hexdigest()
     part_value = int(hex_value, 32)
-    return  part_value % partition_number,part_value
+    return  part_value % partition_number,hex_value
 
 def put(key,val,server_name):
-    
-
-
+    payload = {key:val}
+    res = requests.post(server_name+'/set', json=payload)
+    return 'response from server:{}'.format(res.text)
     pass
 
 @app.route('/set/<key>', methods=['GET', 'POST'])
 def set(key=None):
     if request.method == 'POST':
-        if(key==None):
-            return abort(422,"Unprocessable entity Key required")
+        if(key==None) or not(key.isalnum()) :
+            return abort(422,"Unprocessable entity alphanumric Key required")
 
         value=(json.loads(request.data.decode('utf-8')))
         if len(value)==0:
@@ -34,19 +35,19 @@ def set(key=None):
         server_put,Hash_key = (hash(key, len(app.config['server'])))
 
         for ky,val in value.items():
-            put(Hash_key,val,app.config['server'][server_put])
+            return_val= put(Hash_key,{key:val},app.config['server'][server_put])
             break
         pass
     else:
         return  abort(403,"method not avilable")
         pass
-    return key
+    return return_val
 
 
 
 @app.route('/')
 def home():
-   return 'You wanted {!r} directory'.format(app.config.get('some_setting'))
+   return 'servers are {!r} '.format(app.config.get('server'))
 
 
 

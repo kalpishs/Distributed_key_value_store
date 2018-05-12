@@ -8,6 +8,11 @@ app = Flask(__name__)
 
 @app.before_first_request
 class API(object):
+    """
+       This API class intiated at start of each server node.
+       binds to its own instance of DB object
+
+    """
     def __init__(self):
         self.db = Db_store()
 
@@ -25,6 +30,12 @@ def set():
     return json.dumps(a.setter(data=data_load))
 
 
+@app.route('/ping', methods=['GET'])
+def ping():
+    if request.method == 'GET':
+        payload = {'msg':'success'}
+        status = 200
+        return json.dumps(payload), status
 
 @app.route('/get/<key>',methods=['GET'])
 def get(key=None):
@@ -37,4 +48,3 @@ if __name__ == "__main__":
     server =sys.argv[1]
     servers_conf=(server.split(':')[1])
     app.run(host='0.0.0.0', debug=True, threaded=True, port=int(servers_conf))
-    pass

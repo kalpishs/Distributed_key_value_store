@@ -6,6 +6,8 @@ from flask import request
 from flask import abort
 import hashlib
 import requests
+from configobj import ConfigObj
+
 
 def hash(key, partition_number):
     hash_object = hashlib.sha256(key.encode('utf-8')) # sha256
@@ -33,7 +35,7 @@ def get(key=None):
         server_list.pop(server_get)
         try:
             return_val = geter(Hash_key, app.config['server'][server_get])
-            if(return_val=='response from server:"No such key on any server"'):
+            if(return_val=='response from server: No such key on any server '):
                 return_val = geter(Hash_key, server_list[server_2_get])
         except:
             return_val=geter(Hash_key,server_list[server_2_get])
@@ -76,9 +78,10 @@ def home():
 
 
 if __name__ == "__main__":
-
     print("Number of SERVERS: ", len(sys.argv[1:]))
     servers = []
+    config = ConfigObj('config.ini')
+    
     for i in range (1,len(sys.argv)):
         servers.append("http://"+ sys.argv[i])
         hash(sys.argv[i],len(sys.argv))

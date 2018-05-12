@@ -16,13 +16,13 @@ class Db_store(object):
                 self.storage[key] = value
             except:
                 return  "failed to inset key = {0} with value : {1}".format(key,value)
-        print("sotred key value in Current servers are {}".format(self.storage))
+        print("stored key value in Current servers are {}".format(self.storage))
         return "stored key:value is {}".format(value)
 
     def get(self,**kwargs):
         key=kwargs.get('data')
         if key in self.storage:
-            return  "key value are {}".format(self.storage[key])
+            return  "retrived key value is {}".format(self.storage[key])
         else:
             return "No such key on any server"
 
